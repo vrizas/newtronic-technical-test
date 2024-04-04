@@ -1,5 +1,3 @@
-<!-- create a stack overview and project setup tutorial -->
-
 # Newtronic EDU Overview
 
 ## Frameworks & Libraries
