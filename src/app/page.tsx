@@ -1,95 +1,48 @@
+import { AppBar, Box, Button, Chip, Container, Divider, Stack, Typography } from "@mui/material";
+import type { Metadata } from "next";
 import Image from "next/image";
-import styles from "./page.module.css";
+import { gradientText } from "./customStyles";
+import WhyUs, { Item } from "@/components/home-page/why-us/WhyUs";
+import Header from "@/components/header/Header";
+import Hero from "@/components/home-page/hero/Hero";
+import AboutUs from "@/components/home-page/about-us/AboutUs";
+import DownloadNow from "@/components/home-page/download-now/DownloadNow";
+import Footer from "@/components/footer/Footer";
 
-export default function Home() {
-  return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+export const metadata: Metadata = {
+  title: "Newtronic Edu",
+  description: "Aplikasi dalam bidang pendidikan yang dikembangkan oleh perusahaan newtronic",
+};
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+const BASE_API_URL = 'http://103.183.75.112/api';
 
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
+async function getData() {
+    const response = await fetch(BASE_API_URL + '/directory/dataList');
+   
+    if (!response.ok) {
+      throw new Error('Failed to fetch data');
+    }
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
+    const responseJson = await response.json() as { data: Item[] };
+   
+    return responseJson.data[0];
+  }
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
+export default async function Home() {
+    const data = await getData();
 
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  );
+    return (
+        <>
+            <Header data={data} />
+            <Box component="main" sx={{
+                mt: '60px',
+            }}>
+                <Hero data={data} />
+                <AboutUs />
+                <WhyUs data={data} />
+                <DownloadNow />
+            </Box>
+            <Footer data={data} />
+        </>
+    );
 }
